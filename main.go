@@ -72,10 +72,16 @@ func injectLogs(sourceCode []byte) ([]byte, error) {
 }
 
 func main() {
-	if len(os.Args) <= 1 {
-		panic("not enough args")
+	var fileName string
+	if len(os.Args) >= 2 {
+		fileName = os.Args[1]
+	} else if value, ok := os.LookupEnv("GOFILE"); ok {
+		fileName = value
+	} else {
+		panic("no file name provided as arguemnt or GOFILE environment")
 	}
-	f, err := os.OpenFile(os.Args[1], os.O_RDWR|os.O_APPEND, 0)
+
+	f, err := os.OpenFile(fileName, os.O_RDWR|os.O_APPEND, 0)
 	if err != nil {
 		panic(err)
 	}
